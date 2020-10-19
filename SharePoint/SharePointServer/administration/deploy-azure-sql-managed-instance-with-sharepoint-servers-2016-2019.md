@@ -68,9 +68,26 @@ Deploying a managed instance with SharePoint Server lets you move your SQL Serve
    - _\<DBServer\>_ is the name you gave the Azure SQL Managed Instance in step 4.
    - _\<ConfigDB\>_ is the name of the SharePoint configuration database to be created.
    - _\<ServerRole\>_ is the SharePoint MinRole server role for this server in the SharePoint farm.
-
+   
 5. Run the **SharePoint Products Configuration Wizard** to complete the configuration. Next open Central Administration to complete the **Farm Configuration Wizard**.
 
+6. Add the new server(s) to the above newly created SharePoint farm, connect the database on SQL MI with SQL authentication. Open the **SharePoint Management Shell** on this new server(s) and run the following Windows PowerShell commands:
+
+   ```powershell
+      $DBCredential = Get-Credential -Message "Provide the user name and password for the Azure SQL Managed Instance database login." 
+      $FarmPassphrase = Read-Host -AsSecureString -Prompt "Provide the SharePoint farm passphrase" 
+
+      Connect-SPConfigurationDatabase -DatabaseServer <DBServer> -DatabaseName <ConfigDB> -DatabaseCredentials $DBCredential -Passphrase $FarmPassphrase -LocalServerRole <ServerRole> 
+   ```
+
+    Where:
+    
+   - _\<DBServer\>_ is the name you gave the Azure SQL Managed Instance in step 6.
+   - _\<ConfigDB\>_ is the name of the SharePoint configuration database to be created.
+   - _\<ServerRole\>_ is the SharePoint MinRole server role for this server in the SharePoint farm.
+
+7. Run the **SharePoint Products Configuration Wizard** on the new server(s) on the farm to complete the configuration.
+ 
 > [!NOTE]
 > Access Services isn't supported with Azure SQL Managed Instances.
 
